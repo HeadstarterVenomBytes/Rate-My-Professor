@@ -16,11 +16,13 @@ export const useChat = () => {
     if (!message.trim() || isLoading) return;
 
     setIsLoading(true);
+    const userMessage: ChatRequest = { role: "user", content: message };
     setMessage("");
+
     setMessages((prevMessages) => [
       ...prevMessages,
-      { role: "user", content: message },
-      { role: "assistant", content: message },
+      userMessage,
+      { role: "assistant", content: "" },
     ]);
 
     try {
@@ -29,11 +31,16 @@ export const useChat = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify([...messages, { role: "user", content: message }]),
+        body: JSON.stringify([...messages, userMessage]),
       });
 
+      // handle not okay response
       if (!response.body) {
         throw new Error("Response body is null");
+      }
+
+      if (!response.ok) {
+        throw new Error("Something went wrong while generating response.");
       }
 
       const reader = response.body.getReader();
@@ -51,13 +58,18 @@ export const useChat = () => {
           stream: true,
         });
 
+        // Update assistant message
         setMessages((prevMessages) => {
-          const lastMessage = prevMessages[prevMessages.length - 1];
-          const otherMessages = prevMessages.slice(0, prevMessages.length - 1);
-          return [
-            ...otherMessages,
-            { ...lastMessage, content: lastMessage.content + text },
-          ];
+          const updatedMessages = [...prevMessages];
+          const assistantIndex = updatedMessages.findIndex(
+            (msg) => msg.role === "assistant" && !msg.content
+          );
+
+          if (assistantIndex !== -1) {
+            updatedMessages[assistantIndex].content += text;
+          }
+
+          return updatedMessages;
         });
 
         return reader.read().then(processText);
