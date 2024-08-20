@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useCallback } from "react";
-import { ChatRequest } from "@/types/review";
+import { ChatRequest, ProfessorRecommendation } from "@/types/review";
 
 export const useChat = () => {
   const [messages, setMessages] = useState<ChatRequest[]>([
@@ -43,39 +43,17 @@ export const useChat = () => {
         throw new Error("Something went wrong while generating response.");
       }
 
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-
-      const processText = async ({
-        done,
-        value,
-      }: ReadableStreamReadResult<Uint8Array>): Promise<void> => {
-        if (done) {
-          return;
+      const result = (await response.json()) as ProfessorRecommendation;
+      setMessages((prevMessages) => {
+        const updatedMessages = [...prevMessages];
+        const assistantIndex = updatedMessages.findIndex(
+          (msg) => msg.role === "assistant" && !msg.content
+        );
+        if (assistantIndex !== -1) {
+          updatedMessages[assistantIndex].content = JSON.stringify(result);
         }
-
-        const text = decoder.decode(value || new Uint8Array(), {
-          stream: true,
-        });
-
-        // Update assistant message
-        setMessages((prevMessages) => {
-          const updatedMessages = [...prevMessages];
-          const assistantIndex = updatedMessages.findIndex(
-            (msg) => msg.role === "assistant" && !msg.content
-          );
-
-          if (assistantIndex !== -1) {
-            updatedMessages[assistantIndex].content += text;
-          }
-
-          return updatedMessages;
-        });
-
-        return reader.read().then(processText);
-      };
-
-      await reader.read().then(processText);
+        return updatedMessages;
+      });
     } catch (error) {
       console.error("Error sending message:", error);
       // TODO: show error to user?

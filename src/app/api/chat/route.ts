@@ -52,34 +52,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       combineDocsChain,
     });
 
-    // Stream the response
-    const stream = new ReadableStream<Uint8Array>({
-      async start(controller) {
-        const encoder = new TextEncoder();
-        try {
-          for await (const result of await chain.stream({
-            input: lastMessage,
-          })) {
-            const { context, answer } = result;
-
-            // Process and format the context and answer
-            if (answer) {
-              const answerString = JSON.stringify(answer);
-              controller.enqueue(encoder.encode(answerString));
-            }
-          }
-        } catch (error) {
-          controller.error(error);
-        } finally {
-          controller.close();
-        }
-      },
-    });
-    return new NextResponse(stream, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const result = await chain.invoke({ input: lastMessage });
+    return NextResponse.json(result.answer);
   } catch (error) {
     // Log the full error and stack trace to the server logs
     if (error instanceof Error) {
