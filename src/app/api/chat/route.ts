@@ -2,22 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { ChatOpenAI } from "@langchain/openai";
 import { getRetriever } from "@/lib/utils/retriever";
 import { PromptTemplate } from "@langchain/core/prompts";
-import { ChatRequest, ProfessorMatch } from "@/types/review";
+import { ChatRequest, ProfessorRecommendation } from "@/types/review";
 import { createStuffDocumentsChain } from "langchain/chains/combine_documents";
 import { createRetrievalChain } from "langchain/chains/retrieval";
 import { JsonOutputParser } from "@langchain/core/output_parsers";
 import { createProfessorPromptTemplate } from "@/lib/utils/createPromptTemplate";
-
-// Define the interface for the expected output
-interface ProfessorOutput {
-  answer: string;
-  professors: {
-    name: string;
-    stars: number;
-    subject: string;
-    review: string;
-  }[];
-}
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
@@ -37,23 +26,24 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     });
 
     const documentPrompt = new PromptTemplate({
-      template: `Review of professor: {id}:
+      template: `Review of professor: {professor}:
       Subject {subject}
       Rating: {stars} stars
       Review: {page_content}`,
-      inputVariables: ["id", "subject", "stars", "page_content"],
+      inputVariables: ["professor", "subject", "stars", "page_content"],
     });
 
     const retriever = await getRetriever();
     console.log("Retriever initialized");
 
     // Create a JSONOutputParser based on our expected interface
-    const outputParser = new JsonOutputParser<ProfessorOutput>();
+    const outputParser = new JsonOutputParser<ProfessorRecommendation>();
 
     const combineDocsChain = await createStuffDocumentsChain({
       llm: model,
       prompt: createProfessorPromptTemplate(),
       documentPrompt: documentPrompt,
+      documentSeparator: "\n\n",
       outputParser: outputParser,
     });
 
@@ -65,6 +55,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     // Stream the response
     const stream = new ReadableStream<Uint8Array>({
       async start(controller) {
+        const encoder = new TextEncoder();
         try {
           for await (const result of await chain.stream({
             input: lastMessage,
@@ -73,9 +64,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
             // Process and format the context and answer
             if (answer) {
-              controller.enqueue(
-                new TextEncoder().encode(JSON.stringify(answer))
-              );
+              const answerString = JSON.stringify(answer);
+              controller.enqueue(encoder.encode(answerString));
             }
           }
         } catch (error) {
@@ -85,7 +75,11 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         }
       },
     });
-    return new NextResponse(stream);
+    return new NextResponse(stream, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
   } catch (error) {
     // Log the full error and stack trace to the server logs
     if (error instanceof Error) {
