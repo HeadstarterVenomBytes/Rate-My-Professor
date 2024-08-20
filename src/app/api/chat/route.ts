@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { ChatOpenAI } from "@langchain/openai";
 import { getRetriever } from "@/lib/utils/retriever";
 import { PromptTemplate } from "@langchain/core/prompts";
-import { ChatRequest, ProfessorRecommendation } from "@/types/review";
+import { ChatRequest, ProfessorResponse } from "@/types/review";
 import { createStuffDocumentsChain } from "langchain/chains/combine_documents";
 import { createRetrievalChain } from "langchain/chains/retrieval";
 import { JsonOutputParser } from "@langchain/core/output_parsers";
@@ -16,7 +16,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     const model = new ChatOpenAI({
       temperature: 0,
       modelName: "meta-llama/llama-3.1-8b-instruct:free",
-      streaming: true,
       openAIApiKey: process.env.OPENROUTER_API_KEY!,
       configuration: {
         baseURL: "https://openrouter.ai/api/v1",
@@ -37,7 +36,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     console.log("Retriever initialized");
 
     // Create a JSONOutputParser based on our expected interface
-    const outputParser = new JsonOutputParser<ProfessorRecommendation>();
+    const outputParser = new JsonOutputParser<ProfessorResponse>();
 
     const combineDocsChain = await createStuffDocumentsChain({
       llm: model,
