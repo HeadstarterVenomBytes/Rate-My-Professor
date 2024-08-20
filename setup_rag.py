@@ -37,6 +37,7 @@ for review in data["reviews"]:
             "values": embedding,
             "id": review["professor"],
             "metadata": {
+                "professor": review["professor"],
                 "review": review["review"],
                 "subject": review["subject"],
                 "stars": review["stars"],
