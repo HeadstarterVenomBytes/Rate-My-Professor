@@ -13,6 +13,7 @@ export async function getRetriever() {
   const vectorStore = await PineconeStore.fromExistingIndex(embeddings, {
     pineconeIndex,
     namespace: "ns1",
+    textKey: "review",
   });
 
   return vectorStore.asRetriever({
