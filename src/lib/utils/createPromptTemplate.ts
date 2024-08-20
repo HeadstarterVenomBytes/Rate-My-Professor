@@ -30,7 +30,7 @@ export function createProfessorPromptTemplate() {
             }},
             {{
               "name": "Professor's name",
-              "stars": number of stars,
+              "rating": (out of 5 stars),
               "subject": "Subject taught",
               "review": "Review content"
             }},
