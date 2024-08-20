@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import { Box, Stack, TextField, Button } from "@mui/material";
 import { useChat } from "@/hooks/useChat";
-import { ChatRequest } from "@/types/review";
+import { ProfessorRecommendation } from "@/types/review";
 
 interface ChatComponentProps {}
 
@@ -67,6 +67,7 @@ const ChatComponent: React.FC<ChatComponentProps> = ({}) => {
                 borderRadius={16}
                 p={3}
               >
+                {/* TODO: format the json to make it pretty */}
                 {msg.content}
               </Box>
             </Box>
