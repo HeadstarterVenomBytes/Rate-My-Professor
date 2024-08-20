@@ -6,7 +6,7 @@ export interface ChatRequest {
 // Define the interface for the expected output
 export interface ProfessorRecommendation {
   name: string;
-  stars: number;
+  rating: number;
   subject: string;
   review: string;
 }
