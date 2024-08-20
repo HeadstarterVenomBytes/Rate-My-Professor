@@ -1,11 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ChatOpenAI } from "@langchain/openai";
 import { getRetriever } from "@/lib/utils/retriever";
+import { PromptTemplate } from "@langchain/core/prompts";
 import { ChatRequest, ProfessorMatch } from "@/types/review";
 import { createStuffDocumentsChain } from "langchain/chains/combine_documents";
 import { createRetrievalChain } from "langchain/chains/retrieval";
-import { StringOutputParser } from "@langchain/core/output_parsers";
+import { JsonOutputParser } from "@langchain/core/output_parsers";
 import { createProfessorPromptTemplate } from "@/lib/utils/createPromptTemplate";
+
+// Define the interface for the expected output
+interface ProfessorOutput {
+  answer: string;
+  professors: {
+    name: string;
+    stars: number;
+    subject: string;
+    review: string;
+  }[];
+}
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
@@ -20,15 +32,29 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       configuration: {
         baseURL: "https://openrouter.ai/api/v1",
       },
+    }).bind({
+      response_format: { type: "json_object" },
+    });
+
+    const documentPrompt = new PromptTemplate({
+      template: `Review of professor: {id}:
+      Subject {subject}
+      Rating: {stars} stars
+      Review: {page_content}`,
+      inputVariables: ["id", "subject", "stars", "page_content"],
     });
 
     const retriever = await getRetriever();
     console.log("Retriever initialized");
 
+    // Create a JSONOutputParser based on our expected interface
+    const outputParser = new JsonOutputParser<ProfessorOutput>();
+
     const combineDocsChain = await createStuffDocumentsChain({
       llm: model,
       prompt: createProfessorPromptTemplate(),
-      outputParser: new StringOutputParser(),
+      documentPrompt: documentPrompt,
+      outputParser: outputParser,
     });
 
     const chain = await createRetrievalChain({
@@ -47,7 +73,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
             // Process and format the context and answer
             if (answer) {
-              controller.enqueue(new TextEncoder().encode(answer));
+              controller.enqueue(
+                new TextEncoder().encode(JSON.stringify(answer))
+              );
             }
           }
         } catch (error) {
