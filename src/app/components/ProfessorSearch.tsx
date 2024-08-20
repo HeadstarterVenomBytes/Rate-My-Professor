@@ -70,7 +70,7 @@ const ProfessorSearch: React.FC<ProfessorSearchProps> = ({}) => {
                 <Typography variant="body2">Subject: {prof.subject}</Typography>
                 {/* display highlighted stars based on number? */}
                 <Typography variant="body2">
-                  Rating: {prof.stars} stars
+                  Rating: {prof.rating} stars
                 </Typography>
                 <Typography variant="body2">{prof.review}</Typography>
               </Paper>
