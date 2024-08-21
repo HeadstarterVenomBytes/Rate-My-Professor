@@ -82,6 +82,8 @@ const LandingPage: React.FC<LandingPageProps> = ({}) => {
               variant="contained"
               color="secondary"
               size="large"
+              href="/search"
+              LinkComponent={NextLink}
               sx={{
                 mt: 4,
                 backgroundColor: theme.palette.secondary.main,
