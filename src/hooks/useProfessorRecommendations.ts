@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useCallback, ReactChild } from "react";
+import React, { useState, useCallback } from "react";
 import { ProfessorResponse, ProfessorRecommendation } from "@/types/review";
 
 interface UseProfessorRecommendationsReturn {
@@ -24,7 +24,7 @@ export const useProfessorRecommendations =
       setIsLoading(true);
 
       try {
-        const response = await fetch("/api/chat", {
+        const response = await fetch("/api/recommendProfessors", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
