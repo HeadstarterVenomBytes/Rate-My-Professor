@@ -126,16 +126,31 @@ const LandingPage: React.FC<LandingPageProps> = ({}) => {
           <Button
             variant="contained"
             color="secondary"
+            size="large"
             href="/search"
             LinkComponent={NextLink}
             sx={{
               mt: 4,
-              maxWidth: "fit-content",
+              padding: "12px 24px",
               backgroundColor: theme.palette.secondary.main,
               color: theme.palette.secondary.contrastText,
+              borderColor: theme.palette.info.main,
               "&:hover": {
                 backgroundColor: theme.palette.secondary.dark,
+                borderColor: theme.palette.info.dark,
               },
+              "&:before": {
+                content: '""',
+                position: "absolute",
+                top: "-4px",
+                bottom: "-4px",
+                left: "-4px",
+                right: "-4px",
+                border: `2px solid ${theme.palette.info.main}`,
+                borderRadius: "inherit",
+                zIndex: -1,
+              },
+              fontSize: "1.5rem",  // Makes the button text bigger
             }}
           >
             USE NOW
