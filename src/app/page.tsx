@@ -1,11 +1,11 @@
 "use client";
 import { Container } from "@mui/material";
-import ProfessorSearch from "./components/ProfessorSearch";
+import LandingPage from "./components/LandingPage";
 
 export default function Home() {
   return (
-    <Container maxWidth="lg">
-      <ProfessorSearch />
+    <Container maxWidth={false} disableGutters>
+      <LandingPage />
     </Container>
   );
 }
