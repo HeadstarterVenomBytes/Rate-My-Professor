@@ -4,7 +4,7 @@ import LandingPage from "./components/LandingPage";
 
 export default function Home() {
   return (
-    <Container maxWidth="lg">
+    <Container maxWidth={false} disableGutters>
       <LandingPage />
     </Container>
   );
