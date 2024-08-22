@@ -41,5 +41,4 @@ export interface ProfessorReview {
   grade?: Grade;
   wouldTakeAgain?: YesNo;
   tags?: string[];
-  professor: Professor;
 }

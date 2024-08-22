@@ -84,7 +84,6 @@ export async function scrapeProfessorPage(
             .find(".Tag-bs9vf4-0")
             .map((_, tag) => $(tag).text().trim())
             .get(),
-          professor: null as any, // Temporary placeholder
         } as ProfessorReview;
       })
       .get();
@@ -98,9 +97,6 @@ export async function scrapeProfessorPage(
       reviews,
       tags,
     };
-
-    // Assign the professor to each review
-    professor.reviews.forEach((review) => (review.professor = professor));
 
     return professor;
   } catch (error) {
