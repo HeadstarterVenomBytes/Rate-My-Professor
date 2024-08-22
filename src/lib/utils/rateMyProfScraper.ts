@@ -1,5 +1,6 @@
 import * as cheerio from "cheerio";
 import axios from "axios";
+import { parseCustomDate } from "./dateUtils";
 import {
   Professor,
   ProfessorReview,
@@ -36,44 +37,77 @@ export async function scrapeProfessor(url: string): Promise<Professor | null> {
       tags.push(text);
     });
 
-    const reviews: ProfessorReview[] = $(
-      ".Rating__StyledRating-sc-1rhvpxz-1"
-    ).map((_, el) => {
-      const $review = $(el);
+    const reviews: ProfessorReview[] = $(".Rating__StyledRating-sc-1rhvpxz-1")
+      .map((_, el) => {
+        const $review = $(el);
 
-      const getReviewTextContent = (selector: string): string =>
-        $review.find(selector).first().text().trim();
-      const parseReviewFloatFromText = (selector: string): number =>
-        parseFloat(getReviewTextContent(selector)) || 0;
-      const parseReviewIntFromText = (selector: string): number =>
-        parseInt(getReviewTextContent(selector)) || 0;
+        const getReviewTextContent = (selector: string): string =>
+          $review.find(selector).first().text().trim();
+        const parseReviewFloatFromText = (selector: string): number =>
+          parseFloat(getReviewTextContent(selector)) || 0;
+        const parseReviewIntFromText = (selector: string): number =>
+          parseInt(getReviewTextContent(selector)) || 0;
 
-      const metaItems = $review
-        .find(".CourseMeta__StyledCourseMeta-x344ms-0")
-        .map((_, item) => $(item).text().trim())
-        .get();
-      const getMetaItemValue = (keyword: string): string | undefined =>
-        metaItems
-          .find((item) => item.toLowerCase().includes(keyword.toLowerCase()))
-          ?.split(":")[1]
-          ?.trim();
+        const metaItems = $review
+          .find(".CourseMeta__StyledCourseMeta-x344ms-0")
+          .map((_, item) => $(item).text().trim())
+          .get();
+        const getMetaItemValue = (keyword: string): string | undefined => {
+          const metaItem = $review.find(
+            `.MetaItem__StyledMetaItem-y0ixml-0:contains("${keyword}")`
+          );
+          if (metaItem.length > 0) {
+            return metaItem.find("span").text().trim();
+          }
+          return undefined;
+        };
 
-      return {
-        quality: parseReviewFloatFromText('.CardNumRating__CardNumRatingNumber-sc-17t4b9u-2.gcFhmN') || 0,
-        difficulty: parseReviewFloatFromText('.CardNumRating__CardNumRatingNumber-sc-17t4b9u-2.cDKJcc') || 0,
-        course: getReviewTextContent('.RatingHeader__StyledClass-sc-1dlkqw1-3.eXfReS'),
-        date: getReviewTextContent('.TimeStamp__StyledTimeStamp-sc-9q2r30-0'),
-        review: getReviewTextContent('.Comments__StyledComments-dzzyvm-0'),
-        helpfulVotes: parseReviewIntFromText('.Thumbs__HelpTotalNumber-sc-19shlav-2:eq(0)'),
-        unhelpfulVotes: parseReviewIntFromText('.Thumbs__HelpTotalNumber-sc-19shlav-2:eq(1)'),
-        textbook: getMetaItemValue('textbook') === 'Yes' ? YesNo.Yes : YesNo.No,
-        forCredit: getMetaItemValue('credit') === 'Yes' ? YesNo.Yes : YesNo.No,
-        attendence: getMetaItemValue('attendance')?.includes('Mandatory') ? Attendance.Mandatory : Attendance.NotMandatory,
-        grade: getMetaItemValue('grade') as Grade,
-        wouldTakeAgain: getMetaItemValue('take again') == 'Yes' ? YesNo.Yes : YesNo.No,
-        tags: $review.find('.Tag-bs9vf4-0').map((_, tag) => $(tag).text().trim()).get(),
-      } as ProfessorReview
-    }).get();
+        // Helper function to conditionally include metadata
+        const getOptionalMetaValue = <T>(
+          keyword: string,
+          parse: (value: string) => T
+        ): T | undefined => {
+          const value = getMetaItemValue(keyword);
+          if (value) {
+            return parse(value);
+          }
+          return undefined;
+        };
+
+        return {
+          quality:
+            parseReviewFloatFromText(
+              ".CardNumRating__CardNumRatingNumber-sc-17t4b9u-2.gcFhmN"
+            ) || 0,
+          difficulty:
+            parseReviewFloatFromText(
+              ".CardNumRating__CardNumRatingNumber-sc-17t4b9u-2.cDKJcc"
+            ) || 0,
+          course: getReviewTextContent(
+            ".RatingHeader__StyledClass-sc-1dlkqw1-3.eXfReS"
+          ),
+          date: parseCustomDate(
+            getReviewTextContent(".TimeStamp__StyledTimeStamp-sc-9q2r30-0")
+          ),
+          review: getReviewTextContent(".Comments__StyledComments-dzzyvm-0"),
+          helpfulVotes: parseReviewIntFromText(
+            ".Thumbs__HelpTotalNumber-sc-19shlav-2:eq(0)"
+          ),
+          unhelpfulVotes: parseReviewIntFromText(
+            ".Thumbs__HelpTotalNumber-sc-19shlav-2:eq(1)"
+          ),
+          textbook: getOptionalMetaValue("Textbook", value => value === "Yes" ? YesNo.Yes : YesNo.No),
+          forCredit: getOptionalMetaValue("For Credit", value => value === "Yes" ? YesNo.Yes : YesNo.No),
+          attendence: getOptionalMetaValue("Attendance", value => value === "Mandatory" ? Attendance.Mandatory : Attendance.NotMandatory),
+          grade: getMetaItemValue("Grade") as Grade | undefined,
+          wouldTakeAgain: getOptionalMetaValue("Would Take", value => value === "Yes" ? YesNo.Yes : YesNo.No),
+          tags: $review
+            .find(".Tag-bs9vf4-0")
+            .map((_, tag) => $(tag).text().trim())
+            .get(),
+        } as ProfessorReview;
+      })
+      .get();
 
     const professor: Professor = {
       name,
