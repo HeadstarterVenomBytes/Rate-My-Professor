@@ -1,0 +1,25 @@
+# Ignore everything in the root directory except for the backend directory
+/*
+!backend/
+!backend/**/
+
+# Optionally ignore Dockerfile itself if needed
+# Dockerfile
+
+# Ignore Node.js related files and directories
+*.md
+*.json
+*.lock
+package.json
+package-lock.json
+node_modules/
+public/
+src/
+next-env.d.ts
+next.config.mjs
+tsconfig.json
+
+# Ignore other files that should not be in the Docker build context
+.git/
+.gitignore
+Dockerfile
