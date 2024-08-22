@@ -43,6 +43,6 @@ class Professor(BaseModel):
     university: str
     averageRating: float
     numRatings: int
-    tags: list[str] | None
+    tags: list[str]
     reviews: list[ProfessorReview]
     
