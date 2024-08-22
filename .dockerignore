@@ -1,25 +1,29 @@
-# Ignore everything in the root directory except for the backend directory
-/*
+# Ignore everything
+*
+
+# Allow specific backend files and directories
 !backend/
-!backend/**/
+!backend/pyproject.toml
+!backend/poetry.lock
+!backend/src/
 
-# Optionally ignore Dockerfile itself if needed
-# Dockerfile
+# Ignore unnecessary files inside backend
+backend/**/__pycache__
+backend/**/*.pyc
+backend/**/*.pyo
+backend/**/*.pyd
+backend/.pytest_cache
+backend/.coverage
+backend/.mypy_cache
 
-# Ignore Node.js related files and directories
-*.md
-*.json
-*.lock
-package.json
-package-lock.json
-node_modules/
-public/
-src/
+# Explicitly ignore Next.js and frontend files
+node_modules
+.next
+src
+pages
+public
 next-env.d.ts
 next.config.mjs
+package.json
+package-lock.json
 tsconfig.json
-
-# Ignore other files that should not be in the Docker build context
-.git/
-.gitignore
-Dockerfile
