@@ -24,13 +24,6 @@ export interface Professor {
   averageRating: number;
   numRatings: number;
   reviews: ProfessorReview[];
-  ratingDistribution: {
-    fiveStar: number;
-    fourStar: number;
-    threeStar: number;
-    twoStar: number;
-    oneStar: number;
-  };
   tags: string[];
 }
 
