@@ -69,7 +69,7 @@ class EmbeddingService:
                 name_embedding,
                 department_embedding,
                 university_embedding,
-                tags_embeddings,
+                tags_embedding,
                 avg_review_embedding,
             ]
         )
