@@ -20,7 +20,9 @@ const extractAttendance = (text: string): Attendance =>
 
 const extractGrade = (text: string): Grade => text as Grade; // Direct cast, validation may be needed based on actual data
 
-export async function scrapeProfessorPage(url: string): Promise<Professor> {
+export async function scrapeProfessorPage(
+  url: string
+): Promise<Professor | null> {
   try {
     const { data } = await axios.get(url);
     const $ = cheerio.load(data);
