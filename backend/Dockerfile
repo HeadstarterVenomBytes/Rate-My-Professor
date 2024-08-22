@@ -1,18 +1,37 @@
+# Use an official Python runtime as a parent image
 FROM python:3.11-slim
 
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# Set the working directory in the container
 WORKDIR /app
 
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
+
 # Install Poetry
-RUN pip install poetry
+RUN pip install --no-cache-dir poetry
 
 # Copy project files
 COPY pyproject.toml poetry.lock ./
-RUN poetry install --no-dev
 
+# Install project dependencies
+RUN poetry config virtualenvs.create false \
+    && poetry install --no-dev --no-interaction --no-ansi
+
+# Copy the rest of the application code
 COPY src/ ./src/
 
-# Expose Flask port
-EXPOSE 8080
+# Run as a non-root user
+RUN useradd -m myuser
+USER myuser
 
-# Set entry point
-CMD ["poetry", "run", "python", "src/app.py"]
+# Expose the port the app runs on
+EXPOSE ${PORT}
+
+# Set the entrypoint
+CMD exec gunicorn --bind :${PORT} --workers 1 --threads 8 --timeout 0 src.app:app
