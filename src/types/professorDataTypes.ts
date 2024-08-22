@@ -23,8 +23,8 @@ export interface Professor {
   university: string;
   averageRating: number;
   numRatings: number;
-  reviews: ProfessorReview[];
   tags: string[];
+  reviews: ProfessorReview[];
 }
 
 export interface ProfessorReview {
