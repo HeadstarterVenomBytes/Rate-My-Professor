@@ -1,14 +1,14 @@
-enum YesNo {
+export enum YesNo {
   Yes = "Yes",
   No = "No",
 }
 
-enum Attendance {
+export enum Attendance {
   Mandatory = "Mandatory",
   NotMandatory = "Not Mandatory",
 }
 
-enum Grade {
+export enum Grade {
   A = "A",
   B = "B",
   C = "C",
