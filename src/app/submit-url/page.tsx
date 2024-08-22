@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { Container, Paper } from "@mui/material";
 import UrlSubmissionForm from "../components/UrlSubmissionForm";
