@@ -16,15 +16,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Install Poetry
 RUN pip install --no-cache-dir poetry
 
-# Copy only the files needed for installation
-COPY backend/pyproject.toml backend/poetry.lock ./
+# Copy project files
+COPY pyproject.toml poetry.lock ./
 
 # Install project dependencies
 RUN poetry config virtualenvs.create false \
     && poetry install --no-dev --no-interaction --no-ansi
 
 # Copy the rest of the application code
-COPY backend/src/ ./src/
+COPY src/ ./src/
 
 # Run as a non-root user
 RUN useradd -m myuser
