@@ -10,7 +10,7 @@ app = Flask(__name__)
 embedding_service = EmbeddingService()
 pinecone_client = PineconeClient(
     api_key=getenv("PINECONE_API_KEY", ""),
-    index_name=getenv("rpm-professor-reviews", ""),
+    index_name=getenv("PINECONE_INDEX_NAME", ""),
 )
 
 
