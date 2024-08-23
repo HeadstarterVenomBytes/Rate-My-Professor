@@ -1,9 +1,6 @@
 # Use an official Python runtime as a parent image
 FROM python:3.11-slim
 
-# Set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
 
 # Set the working directory in the container
 WORKDIR /app
@@ -13,15 +10,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Poetry
-RUN pip install --no-cache-dir poetry
+# Copy requirements file
+COPY requirements.txt .
 
-# Copy project files
-COPY pyproject.toml poetry.lock ./
-
-# Install project dependencies
-RUN poetry config virtualenvs.create false \
-    && poetry install --no-dev --no-interaction --no-ansi
+# Install Python dependencies using pip
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application code
 COPY src/ ./src/
