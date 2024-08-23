@@ -13,10 +13,14 @@ import {
 
 interface UrlSubmissionFormProps {
   onSubmit: (url: string) => void;
+  loading: boolean;
 }
 
 // TODO: ability to submit multiple urls
-const UrlSubmissionForm: React.FC<UrlSubmissionFormProps> = ({ onSubmit }) => {
+const UrlSubmissionForm: React.FC<UrlSubmissionFormProps> = ({
+  onSubmit,
+  loading,
+}) => {
   const theme = useTheme();
   const [url, setUrl] = useState<string>("");
   const [error, setError] = useState<string>("");
@@ -57,8 +61,9 @@ const UrlSubmissionForm: React.FC<UrlSubmissionFormProps> = ({ onSubmit }) => {
           color="primary"
           fullWidth
           sx={{ mt: 2 }}
+          disabled={loading}
         >
-          Submit URL
+          {loading ? "Processing..." : "Submit URL"}
         </Button>
       </FormGroup>
     </FormControl>
