@@ -15,7 +15,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "https://rate-my-professor-lac.vercel.app/"}})
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 embedding_service = EmbeddingService()
 pinecone_client = PineconeClient(
