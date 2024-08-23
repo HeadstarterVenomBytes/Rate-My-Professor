@@ -1,8 +1,9 @@
 from typing import Any
+
+import numpy as np
+import torch
 from sentence_transformers import SentenceTransformer
 from transformers import BertModel, BertTokenizer
-import torch
-import numpy as np
 
 
 class EmbeddingService:
