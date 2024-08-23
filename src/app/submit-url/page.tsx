@@ -31,7 +31,7 @@ export default function SubmitUrlPage(): React.JSX.Element {
           upsertProfessor(professorData, (result) => {
             if (result.success) {
               setUpsertSuccess(
-                result.message || "Professor data usperted successfully"
+                result.message || "Professor data upserted successfully"
               );
             } else {
               setUpsertError(result.error || "Failed to upsert professor data");
