@@ -52,8 +52,8 @@ def map_grade(detailed_grade: str) -> Grade:
 
 
 class ProfessorReview(BaseModel):
-    quality: int = Field(ge=0.0, le=5.0)
-    difficulty: int = Field(ge=0.0, le=5.0)
+    quality: float = Field(ge=0.0, le=5.0)
+    difficulty: float = Field(ge=0.0, le=5.0)
     course: str
     date: datetime
     review: str
