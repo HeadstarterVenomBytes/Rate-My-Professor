@@ -1,33 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
-  Container,
   Typography,
-  Grid,
   AppBar,
   Toolbar,
-  Link,
+  Menu,
+  MenuItem,
+  IconButton,
   useTheme,
 } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu"; // Import the hamburger icon
 import NextLink from "next/link";
 
 interface LandingPageProps {}
 
 const LandingPage: React.FC<LandingPageProps> = ({}) => {
   const theme = useTheme();
-  // TODO: dont use the empty component
-  return (
-    <Box
-      sx={{
-        width: "100vw",
-        height: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-        backgroundColor: theme.palette.surface.main,
-      }}
-    >
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  // Function to open the menu
+  const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  // Function to close the menu
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  // Define the Topbar component inside the same file
+  const Topbar: React.FC = () => {
+    return (
       <AppBar
         position="static"
         sx={{
@@ -56,48 +60,85 @@ const LandingPage: React.FC<LandingPageProps> = ({}) => {
           >
             ProfPick
           </Typography>
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 2,
-            }}
-          >
-            <Button
-              variant="text"
-              color="secondary"
-              component={NextLink}
-              href="#"
-              sx={{
-                backgroundColor: theme.palette.secondary.main,
-                color: theme.palette.secondary.contrastText,
-                "&:hover": {
-                  backgroundColor: theme.palette.secondary.dark,
-                },
-              }}
+
+          {/* Hamburger Menu */}
+          <Box>
+            <IconButton
+              size="large"
+              edge="start"
+              color="inherit"
+              aria-label="menu"
+              sx={{ mr: 2 }}
+              onClick={handleMenuOpen} // Trigger menu open
             >
-              Login
-            </Button>
-            <Button
-              variant="contained"
-              color="secondary"
-              component={NextLink}
-              href="/search"
-              sx={{
-                backgroundColor: theme.palette.secondary.main,
-                color: theme.palette.secondary.contrastText,
-                "&:hover": {
-                  backgroundColor: theme.palette.secondary.dark,
-                },
+              <MenuIcon />
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorEl}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
               }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose} // Trigger menu close
             >
-              Sign Up
-            </Button>
+              {/* Menu items for navigation */}
+              <MenuItem
+                component={NextLink}
+                href="/search"
+                onClick={handleMenuClose}
+              >
+                Search
+              </MenuItem>
+              <MenuItem
+                component={NextLink}
+                href="/submit-url"
+                onClick={handleMenuClose}
+              >
+                Submit URL
+              </MenuItem>
+              <MenuItem
+                component={NextLink}
+                href="/login"
+                onClick={handleMenuClose}
+              >
+                Login
+              </MenuItem>
+              <MenuItem
+                component={NextLink}
+                href="/sign-up"
+                onClick={handleMenuClose}
+              >
+                Sign Up
+              </MenuItem>
+            </Menu>
           </Box>
         </Toolbar>
       </AppBar>
+    );
+  };
 
-      {/* TODO: get rid of the calc use flex boxes or something */}
+  return (
+    <Box
+      sx={{
+        width: "100vw",
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        backgroundColor: theme.palette.surface.main,
+      }}
+    >
+      {/* Use the Topbar component here */}
+      <Topbar />
+
+      {/* Content */}
       <Box display="flex" flexGrow={1}>
         <Box
           component="div"
