@@ -57,8 +57,11 @@ class EmbeddingService:
         name_embedding = self.generate_token_embeddings([name])[0]
         department_embedding = self.generate_token_embeddings([department])[0]
         university_embedding = self.generate_token_embeddings([university])[0]
-        tags_embeddings = self.generate_token_embeddings(tags)
-        tags_embedding = np.mean(tags_embeddings, axis=0)  # Average tags embedding
+        if not tags:
+            tags_embedding = np.zeros(name_embedding.shape)  # Create a zero vector
+        else:
+            tags_embeddings = self.generate_token_embeddings(tags)
+            tags_embedding = np.mean(tags_embeddings, axis=0)
 
         # Sentence embeddings
         review_embeddings = self.generate_sentence_embeddings(review_texts)
