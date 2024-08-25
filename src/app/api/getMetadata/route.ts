@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { fetchMetadataSets } from "@/lib/utils/fetchPineconeMetadata";
 import { MetadataResult } from "@/types/pineconeMetadata";
 
-export default async function GET(
+export async function GET(
   req: NextRequest
 ): Promise<NextResponse<MetadataResult | { error: string }>> {
   try {
