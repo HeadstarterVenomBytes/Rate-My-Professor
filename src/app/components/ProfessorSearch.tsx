@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Grid,
@@ -14,14 +14,32 @@ import {
   CardContent,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import { AdvancedSearchForm } from "./AdvancedSearchForm";
+import { AdvancedSearchFormData } from "@/types/professorSearchQuery";
 import { useProfessorRecommendations } from "@/hooks/useProfessorRecommendations";
+import { useMetadata } from "@/hooks/useMetadataSets";
 
 interface ProfessorSearchProps {}
 
 const ProfessorSearch: React.FC<ProfessorSearchProps> = ({}) => {
   const { message, setMessage, sendMessage, recommendations, isLoading } =
     useProfessorRecommendations();
+  const {
+    metadata,
+    isLoading: isLoadingMetadata,
+    error: metadataError,
+  } = useMetadata();
   const theme = useTheme();
+
+  const [formData, setFormData] = useState<AdvancedSearchFormData>({
+    university: "",
+    department: "",
+    numRecommendations: 5,
+  });
+
+  const handleSearch = (formData: AdvancedSearchFormData) => {
+    sendMessage(formData);
+  };
 
   return (
     <Box
@@ -54,14 +72,17 @@ const ProfessorSearch: React.FC<ProfessorSearchProps> = ({}) => {
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
-                sendMessage();
+                sendMessage(formData);
               }
             }}
             disabled={isLoading}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <IconButton onClick={sendMessage} disabled={isLoading}>
+                  <IconButton
+                    onClick={() => sendMessage(formData)}
+                    disabled={isLoading}
+                  >
                     <SearchIcon />
                   </IconButton>
                 </InputAdornment>
@@ -82,7 +103,17 @@ const ProfessorSearch: React.FC<ProfessorSearchProps> = ({}) => {
                 },
               },
             }}
-          ></TextField>
+          />
+
+          {/* Advanced Search Form */}
+          <AdvancedSearchForm
+            onSubmit={handleSearch}
+            formData={formData}
+            setFormData={setFormData}
+            metadata={metadata}
+            isLoadingMetadata={isLoadingMetadata}
+            metadataError={metadataError}
+          />
         </Paper>
       </Box>
 
