@@ -27,6 +27,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     const documentPrompt = new PromptTemplate({
       template: `Review of professor: {name}:
 University: {university}
+Department: {department}
 Average Rating: {averageRating} stars
 Top Reviews Average Rating: {topReviewsAvgRating} stars
 Number of Ratings: {numRatings}
@@ -36,6 +37,7 @@ Reviews Summary: {page_content}`,
       inputVariables: [
         "name",
         "university",
+        "department",
         "averageRating",
         "topReviewsAvgRating",
         "numRatings",
@@ -45,7 +47,7 @@ Reviews Summary: {page_content}`,
       ],
     });
 
-    const retriever = await getRetriever();
+    const retriever = await getRetriever(10);
     console.log("Retriever initialized");
 
     // Create a JSONOutputParser based on our expected interface
