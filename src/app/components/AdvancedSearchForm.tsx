@@ -14,21 +14,21 @@ import { MetadataResult } from "@/types/pineconeMetadata";
 import { AdvancedSearchFormData } from "@/types/professorSearchQuery";
 
 interface AdvancedSearchFormProps {
-  onSubmit: (formData: AdvancedSearchFormData) => void;
   formData: AdvancedSearchFormData;
   setFormData: React.Dispatch<React.SetStateAction<AdvancedSearchFormData>>;
   metadata: MetadataResult | null;
   isLoadingMetadata: boolean;
   metadataError: string | null;
+  onSubmit: () => void;
 }
 
 export const AdvancedSearchForm: React.FC<AdvancedSearchFormProps> = ({
-  onSubmit,
   formData,
   setFormData,
   metadata,
   isLoadingMetadata,
   metadataError,
+  onSubmit,
 }) => {
   const [showAdvanced, setShowAdvanced] = useState<boolean>(false);
 
@@ -44,7 +44,7 @@ export const AdvancedSearchForm: React.FC<AdvancedSearchFormProps> = ({
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    onSubmit(formData);
+    onSubmit();
   };
 
   return (

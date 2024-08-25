@@ -1,10 +1,16 @@
 "use client";
 import React, { useState, useCallback } from "react";
 import { ProfessorResponse, ProfessorRecommendation } from "@/types/review";
+import {
+  ProfessorSearchRequest,
+  AdvancedSearchFormData,
+} from "@/types/professorSearchQuery";
 
 interface UseProfessorRecommendationsReturn {
   message: string;
   setMessage: React.Dispatch<React.SetStateAction<string>>;
+  formData: AdvancedSearchFormData;
+  setFormData: React.Dispatch<React.SetStateAction<AdvancedSearchFormData>>;
   sendMessage: () => void;
   recommendations: ProfessorRecommendation[];
   isLoading: boolean;
@@ -17,6 +23,11 @@ export const useProfessorRecommendations =
     const [recommendations, setRecommendations] = useState<
       ProfessorRecommendation[]
     >([]);
+    const [formData, setFormData] = useState<AdvancedSearchFormData>({
+      university: "",
+      department: "",
+      numRecommendations: 5,
+    });
 
     const sendMessage = useCallback(async () => {
       if (!message.trim() || isLoading) return;
@@ -29,7 +40,10 @@ export const useProfessorRecommendations =
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify([{ role: "user", content: message }]),
+          body: JSON.stringify({
+            message,
+            filters: formData,
+          } as ProfessorSearchRequest),
         });
 
         if (!response.ok || !response.body) {
@@ -52,12 +66,14 @@ export const useProfessorRecommendations =
       } finally {
         setIsLoading(false);
       }
-    }, [message, isLoading]);
+    }, [message, isLoading, formData]);
 
     return {
       message,
       setMessage,
       sendMessage,
+      formData,
+      setFormData,
       recommendations,
       isLoading,
     };

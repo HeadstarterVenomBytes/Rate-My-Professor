@@ -22,24 +22,21 @@ import { useMetadata } from "@/hooks/useMetadataSets";
 interface ProfessorSearchProps {}
 
 const ProfessorSearch: React.FC<ProfessorSearchProps> = ({}) => {
-  const { message, setMessage, sendMessage, recommendations, isLoading } =
-    useProfessorRecommendations();
+  const {
+    message,
+    setMessage,
+    formData,
+    setFormData,
+    sendMessage,
+    recommendations,
+    isLoading,
+  } = useProfessorRecommendations();
   const {
     metadata,
     isLoading: isLoadingMetadata,
     error: metadataError,
   } = useMetadata();
   const theme = useTheme();
-
-  const [formData, setFormData] = useState<AdvancedSearchFormData>({
-    university: "",
-    department: "",
-    numRecommendations: 5,
-  });
-
-  const handleSearch = (formData: AdvancedSearchFormData) => {
-    sendMessage(formData);
-  };
 
   return (
     <Box
@@ -72,17 +69,14 @@ const ProfessorSearch: React.FC<ProfessorSearchProps> = ({}) => {
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
-                sendMessage(formData);
+                sendMessage();
               }
             }}
             disabled={isLoading}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <IconButton
-                    onClick={() => sendMessage(formData)}
-                    disabled={isLoading}
-                  >
+                  <IconButton onClick={sendMessage} disabled={isLoading}>
                     <SearchIcon />
                   </IconButton>
                 </InputAdornment>
@@ -107,12 +101,12 @@ const ProfessorSearch: React.FC<ProfessorSearchProps> = ({}) => {
 
           {/* Advanced Search Form */}
           <AdvancedSearchForm
-            onSubmit={handleSearch}
             formData={formData}
             setFormData={setFormData}
             metadata={metadata}
             isLoadingMetadata={isLoadingMetadata}
             metadataError={metadataError}
+            onSubmit={sendMessage}
           />
         </Paper>
       </Box>
