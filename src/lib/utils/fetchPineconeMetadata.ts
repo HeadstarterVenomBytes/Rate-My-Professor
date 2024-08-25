@@ -1,11 +1,6 @@
 import { pineconeClient } from "../clients/pinecone";
 import { PineconeMetadata } from "@/types/pineconeMetadata";
-
-type MetadataField = "university" | "department";
-
-type MetadataResult = {
-  [K in MetadataField]: string[];
-};
+import { MetadataResult, MetadataField } from "@/types/pineconeMetadata";
 
 export async function fetchMetadataSets(
   indexName: string,

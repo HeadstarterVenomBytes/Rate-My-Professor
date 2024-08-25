@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { fetchMetadataSets } from "@/lib/utils/pineconeMetadata";
+import { fetchMetadataSets } from "@/lib/utils/fetchPineconeMetadata";
 
 export default async function GET(req: NextRequest): Promise<NextResponse> {
   try {
