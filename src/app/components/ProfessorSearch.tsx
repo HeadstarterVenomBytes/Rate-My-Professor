@@ -23,7 +23,6 @@ const ProfessorSearch: React.FC<ProfessorSearchProps> = ({}) => {
     useProfessorRecommendations();
   const theme = useTheme();
 
-  // TODO: theme this with the theme
   return (
     <Box
       width="100%"
