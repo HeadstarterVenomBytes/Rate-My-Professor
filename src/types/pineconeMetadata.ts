@@ -11,3 +11,9 @@ export interface PineconeMetadata extends RecordMetadata {
   university: string;
   wouldTakeAgainPercentage: number;
 }
+
+export type MetadataField = "university" | "department";
+
+export type MetadataResult = {
+  [K in MetadataField]: string[];
+};
