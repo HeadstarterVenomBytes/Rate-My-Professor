@@ -87,7 +87,7 @@ const ProfessorSearch: React.FC<ProfessorSearchProps> = ({}) => {
       </Box>
 
       {/* Display Professor Recommendations */}
-      <Grid container spacing={2} mt={4}>
+      <Grid container spacing={3}>
         {recommendations && recommendations.length > 0 ? (
           recommendations.map((prof, index) => (
             <Grid item xs={12} sm={6} md={4} key={index}>
