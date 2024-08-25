@@ -1,50 +1,36 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
   Collapse,
-  FormControl,
   Grid,
-  InputLabel,
-  MenuItem,
-  Select,
   TextField,
-  CircularProgress,
   SelectChangeEvent,
-  Typography,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import AdvancedFormSelectField from "./AdvancedFormSelectField";
-
-export interface AdvancedSearchFormData {
-  university: string;
-  department: string;
-  numRecommendations: number;
-}
+import { MetadataResult } from "@/types/pineconeMetadata";
+import { AdvancedSearchFormData } from "@/types/professorSearchQuery";
 
 interface AdvancedSearchFormProps {
   onSubmit: (formData: AdvancedSearchFormData) => void;
-  metadata: {
-    universities: string[];
-    departments: string[];
-  } | null;
+  formData: AdvancedSearchFormData;
+  setFormData: React.Dispatch<React.SetStateAction<AdvancedSearchFormData>>;
+  metadata: MetadataResult | null;
   isLoadingMetadata: boolean;
   metadataError: string | null;
 }
 
 export const AdvancedSearchForm: React.FC<AdvancedSearchFormProps> = ({
   onSubmit,
+  formData,
+  setFormData,
   metadata,
   isLoadingMetadata,
   metadataError,
 }) => {
   const [showAdvanced, setShowAdvanced] = useState<boolean>(false);
-  const [formData, setFormData] = useState<AdvancedSearchFormData>({
-    university: "",
-    department: "",
-    numRecommendations: 5,
-  });
 
   // Overloaded handleChange that can handle both Select and TextField events
   function handleChange(event: React.ChangeEvent<HTMLInputElement>): void;
@@ -88,7 +74,7 @@ export const AdvancedSearchForm: React.FC<AdvancedSearchFormProps> = ({
               label="University"
               name="university"
               value={formData.university}
-              options={metadata?.universities || []}
+              options={metadata?.university || []}
               isLoading={isLoadingMetadata}
               error={metadataError}
               handleChange={handleChange}
@@ -99,7 +85,7 @@ export const AdvancedSearchForm: React.FC<AdvancedSearchFormProps> = ({
               label="Department"
               name="department"
               value={formData.department}
-              options={metadata?.departments || []}
+              options={metadata?.department || []}
               isLoading={isLoadingMetadata}
               error={metadataError}
               handleChange={handleChange}
