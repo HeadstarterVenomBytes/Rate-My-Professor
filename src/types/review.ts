@@ -7,6 +7,7 @@ export interface ChatRequest {
 export interface ProfessorRecommendation {
   name: string;
   university: string;
+  department: string;
   averageRating: number;
   topReviewsAvgRating: number;
   numRatings: number;
