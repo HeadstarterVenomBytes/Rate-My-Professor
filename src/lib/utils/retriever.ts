@@ -1,8 +1,9 @@
 import { PineconeStore } from "@langchain/pinecone";
 import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf";
 import { pineconeClient } from "../clients/pinecone";
+import { AdvancedSearchFormData } from "@/types/professorSearchQuery";
 
-export async function getRetriever(k: number = 3) {
+export async function getRetriever(filters: AdvancedSearchFormData) {
   const embeddings = new HuggingFaceInferenceEmbeddings({
     apiKey: process.env.HUGGINGFACEHUB_API_KEY!,
     model: "sentence-transformers/all-mpnet-base-v2",
@@ -18,6 +19,10 @@ export async function getRetriever(k: number = 3) {
   });
 
   return vectorStore.asRetriever({
-    k: k,
+    k: filters.numRecommendations,
+    filter: {
+      ...(filters.university && { university: filters.university }),
+      ...(filters.department && { department: filters.department }),
+    },
   });
 }

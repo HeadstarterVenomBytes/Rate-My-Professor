@@ -42,7 +42,7 @@ Your response must consist solely of a JSON object in the following format, with
       "reviews_summary": "Summary of reviews with helpful votes",
       "explanation": "A brief explanation of why this professor was chosen and ranked in this position"
     }},
-    ...
+    ... (repeat this structure {numRecommendations} times
   ]
 }}
 
@@ -53,6 +53,6 @@ Given the context:
         User's Question: {input}
       `),
     ],
-    inputVariables: ["context", "input"],
+    inputVariables: ["context", "input", "numRecommendations"],
   });
 }
