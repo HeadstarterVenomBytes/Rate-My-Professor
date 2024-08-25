@@ -3,7 +3,6 @@ import {
   HumanMessagePromptTemplate,
   SystemMessagePromptTemplate,
 } from "@langchain/core/prompts";
-import { PromptTemplate } from "@langchain/core/prompts";
 
 export function createProfessorPromptTemplate() {
   return new ChatPromptTemplate({

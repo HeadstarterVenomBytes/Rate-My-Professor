@@ -32,7 +32,7 @@ Top Reviews Average Rating: {topReviewsAvgRating} stars
 Number of Ratings: {numRatings}
 Would Take Again: {wouldTakeAgainPercentage}%
 Tags: {tags}
-Reviews Summary: {reviews_summary}`,
+Reviews Summary: {page_content}`,
       inputVariables: [
         "name",
         "university",
@@ -41,7 +41,7 @@ Reviews Summary: {reviews_summary}`,
         "numRatings",
         "wouldTakeAgainPercentage",
         "tags",
-        "reviews_summary",
+        "page_content",
       ],
     });
 
