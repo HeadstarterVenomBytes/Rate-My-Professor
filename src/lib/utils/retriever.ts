@@ -8,7 +8,9 @@ export async function getRetriever(k: number = 3) {
     model: "sentence-transformers/all-mpnet-base-v2",
   });
 
-  const pineconeIndex = pineconeClient.Index(process.env.PINECONE_INDEX_NAME_2!);
+  const pineconeIndex = pineconeClient.Index(
+    process.env.PINECONE_INDEX_NAME_2!
+  );
 
   const vectorStore = await PineconeStore.fromExistingIndex(embeddings, {
     pineconeIndex,
@@ -16,6 +18,6 @@ export async function getRetriever(k: number = 3) {
   });
 
   return vectorStore.asRetriever({
-    k: k
+    k: k,
   });
 }
