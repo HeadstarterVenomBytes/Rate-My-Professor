@@ -2,10 +2,10 @@ import { PineconeStore } from "@langchain/pinecone";
 import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf";
 import { pineconeClient } from "../clients/pinecone";
 
-export async function getRetriever() {
+export async function getRetriever(k: number = 3) {
   const embeddings = new HuggingFaceInferenceEmbeddings({
     apiKey: process.env.HUGGINGFACEHUB_API_KEY!,
-    model: "intfloat/multilingual-e5-large",
+    model: "sentence-transformers/all-mpnet-base-v2",
   });
 
   const pineconeIndex = pineconeClient.Index(process.env.PINECONE_INDEX_NAME!);
@@ -17,6 +17,6 @@ export async function getRetriever() {
   });
 
   return vectorStore.asRetriever({
-    k: 3,
+    k: k
   });
 }
