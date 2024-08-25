@@ -94,9 +94,11 @@ export const AdvancedSearchForm: React.FC<AdvancedSearchFormProps> = ({
         </Grid>
       </Collapse>
 
-      <Button type="submit" variant="contained" sx={{ mt: 2 }}>
-        Apply Filters
-      </Button>
+      {showAdvanced && (
+        <Button type="submit" variant="contained" sx={{ mt: 2 }}>
+          Apply Filters
+        </Button>
+      )}
     </Box>
   );
 };
