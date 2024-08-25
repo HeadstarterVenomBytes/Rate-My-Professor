@@ -31,7 +31,6 @@ Department: {department}
 Average Rating: {averageRating} stars
 Top Reviews Average Rating: {topReviewsAvgRating} stars
 Number of Ratings: {numRatings}
-Would Take Again: {wouldTakeAgainPercentage}%
 Tags: {tags}
 Reviews Summary: {page_content}`,
       inputVariables: [
@@ -41,7 +40,6 @@ Reviews Summary: {page_content}`,
         "averageRating",
         "topReviewsAvgRating",
         "numRatings",
-        "wouldTakeAgainPercentage",
         "tags",
         "page_content",
       ],
