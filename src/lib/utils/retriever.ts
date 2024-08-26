@@ -18,11 +18,18 @@ export async function getRetriever(filters: AdvancedSearchFormData) {
     textKey: "reviews_summary",
   });
 
+  const filter: Record<string, string> = {}
+
+  if (filters.university && filters.university.trim() !== "") {
+    filter.university = filters.university;
+  }
+
+  if (filters.department && filter.department.trim() !== "") {
+    filter.department = filters.department;
+  }
+
   return vectorStore.asRetriever({
     k: filters.numRecommendations,
-    filter: {
-      ...(filters.university && { university: filters.university }),
-      ...(filters.department && { department: filters.department }),
-    },
+    filter: Object.keys(filter).length > 0 ? filter: undefined
   });
 }
