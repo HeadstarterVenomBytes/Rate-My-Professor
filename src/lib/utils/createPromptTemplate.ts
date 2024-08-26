@@ -12,7 +12,6 @@ You are a knowledgeable Rate My Professor agent. Your role is to assist students
 Rank the top professors by considering:
 1. The relevance of the professor's department to the user's query.
 2. The professor's average rating and top reviews average rating.
-3. The number of ratings and the "would take again" percentage.
 4. The tags associated with the professor.
 5. The content of the professor's reviews.
 
@@ -28,7 +27,6 @@ Your response must consist solely of a JSON object in the following format, with
       "averageRating": (average rating out of 5),
       "topReviewsAvgRating": (top reviews average rating out of 5),
       "numRatings": (number of ratings),
-      "wouldTakeAgainPercentage": (percentage who would take again),
       "tags": "Comma-separated list of tags",
       "reviews_summary": "Summary of reviews with helpful votes",
       "explanation": "A brief explanation of why this professor was chosen and ranked in this position"
@@ -40,12 +38,11 @@ Your response must consist solely of a JSON object in the following format, with
       "averageRating": (average rating out of 5),
       "topReviewsAvgRating": (top reviews average rating out of 5),
       "numRatings": (number of ratings),
-      "wouldTakeAgainPercentage": (percentage who would take again),
       "tags": "Comma-separated list of tags",
       "reviews_summary": "Summary of reviews with helpful votes",
       "explanation": "A brief explanation of why this professor was chosen and ranked in this position"
     }},
-    ...
+    ... (repeat this structure {numRecommendations} times
   ]
 }}
 
@@ -56,6 +53,6 @@ Given the context:
         User's Question: {input}
       `),
     ],
-    inputVariables: ["context", "input"],
+    inputVariables: ["context", "input", "numRecommendations"],
   });
 }

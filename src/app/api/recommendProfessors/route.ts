@@ -2,16 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { ChatOpenAI } from "@langchain/openai";
 import { getRetriever } from "@/lib/utils/retriever";
 import { PromptTemplate } from "@langchain/core/prompts";
-import { ChatRequest, ProfessorResponse } from "@/types/review";
+import { ProfessorResponse } from "@/types/review";
 import { createStuffDocumentsChain } from "langchain/chains/combine_documents";
 import { createRetrievalChain } from "langchain/chains/retrieval";
 import { JsonOutputParser } from "@langchain/core/output_parsers";
 import { createProfessorPromptTemplate } from "@/lib/utils/createPromptTemplate";
+import { ProfessorSearchRequest } from "@/types/professorSearchQuery";
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
-    const data: ChatRequest[] = await req.json();
-    const lastMessage = data[data.length - 1].content;
+    const { message, filters }: ProfessorSearchRequest = await req.json();
 
     const model = new ChatOpenAI({
       temperature: 0,
@@ -31,7 +31,6 @@ Department: {department}
 Average Rating: {averageRating} stars
 Top Reviews Average Rating: {topReviewsAvgRating} stars
 Number of Ratings: {numRatings}
-Would Take Again: {wouldTakeAgainPercentage}%
 Tags: {tags}
 Reviews Summary: {page_content}`,
       inputVariables: [
@@ -41,13 +40,12 @@ Reviews Summary: {page_content}`,
         "averageRating",
         "topReviewsAvgRating",
         "numRatings",
-        "wouldTakeAgainPercentage",
         "tags",
         "page_content",
       ],
     });
 
-    const retriever = await getRetriever(10);
+    const retriever = await getRetriever(filters);
     console.log("Retriever initialized");
 
     // Create a JSONOutputParser based on our expected interface
@@ -66,7 +64,10 @@ Reviews Summary: {page_content}`,
       combineDocsChain,
     });
 
-    const result = await chain.invoke({ input: lastMessage });
+    const result = await chain.invoke({
+      input: message,
+      numRecommendations: filters.numRecommendations,
+    });
     return NextResponse.json(result.answer);
   } catch (error) {
     // Log the full error and stack trace to the server logs

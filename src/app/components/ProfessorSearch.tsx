@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Grid,
@@ -14,13 +14,28 @@ import {
   CardContent,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import { AdvancedSearchForm } from "./AdvancedSearchForm";
+import { AdvancedSearchFormData } from "@/types/professorSearchQuery";
 import { useProfessorRecommendations } from "@/hooks/useProfessorRecommendations";
+import { useMetadata } from "@/hooks/useMetadataSets";
 
 interface ProfessorSearchProps {}
 
 const ProfessorSearch: React.FC<ProfessorSearchProps> = ({}) => {
-  const { message, setMessage, sendMessage, recommendations, isLoading } =
-    useProfessorRecommendations();
+  const {
+    message,
+    setMessage,
+    formData,
+    setFormData,
+    sendMessage,
+    recommendations,
+    isLoading,
+  } = useProfessorRecommendations();
+  const {
+    metadata,
+    isLoading: isLoadingMetadata,
+    error: metadataError,
+  } = useMetadata();
   const theme = useTheme();
 
   return (
@@ -82,7 +97,17 @@ const ProfessorSearch: React.FC<ProfessorSearchProps> = ({}) => {
                 },
               },
             }}
-          ></TextField>
+          />
+
+          {/* Advanced Search Form */}
+          <AdvancedSearchForm
+            formData={formData}
+            setFormData={setFormData}
+            metadata={metadata}
+            isLoadingMetadata={isLoadingMetadata}
+            metadataError={metadataError}
+            onSubmit={sendMessage}
+          />
         </Paper>
       </Box>
 
