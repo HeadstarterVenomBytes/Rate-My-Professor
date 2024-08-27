@@ -3,126 +3,16 @@ import {
   Box,
   Button,
   Typography,
-  AppBar,
-  Toolbar,
-  Menu,
-  MenuItem,
-  IconButton,
   useTheme,
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu"; // Import the hamburger icon
+import TopBar from "./TopBar";
 import NextLink from "next/link";
 
 interface LandingPageProps {}
 
 const LandingPage: React.FC<LandingPageProps> = ({}) => {
   const theme = useTheme();
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-  // Function to open the menu
-  const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  // Function to close the menu
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-
-  // Define the Topbar component inside the same file
-  const Topbar: React.FC = () => {
-    return (
-      <AppBar
-        position="static"
-        sx={{
-          backgroundColor: theme.palette.primary.main,
-          color: theme.palette.primary.contrastText,
-          boxShadow: "none",
-        }}
-      >
-        <Toolbar
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: "0 16px",
-          }}
-        >
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{
-              fontWeight: "bold",
-              "&:hover": {
-                color: theme.palette.primary.light,
-              },
-            }}
-          >
-            ProfPick
-          </Typography>
-
-          {/* Hamburger Menu */}
-          <Box>
-            <IconButton
-              size="large"
-              edge="start"
-              color="inherit"
-              aria-label="menu"
-              sx={{ mr: 2 }}
-              onClick={handleMenuOpen} // Trigger menu open
-            >
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorEl}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorEl)}
-              onClose={handleMenuClose} // Trigger menu close
-            >
-              {/* Menu items for navigation */}
-              <MenuItem
-                component={NextLink}
-                href="/search"
-                onClick={handleMenuClose}
-              >
-                Search
-              </MenuItem>
-              <MenuItem
-                component={NextLink}
-                href="/submit-url"
-                onClick={handleMenuClose}
-              >
-                Submit URL
-              </MenuItem>
-              <MenuItem
-                component={NextLink}
-                href="/login"
-                onClick={handleMenuClose}
-              >
-                Login
-              </MenuItem>
-              <MenuItem
-                component={NextLink}
-                href="/sign-up"
-                onClick={handleMenuClose}
-              >
-                Sign Up
-              </MenuItem>
-            </Menu>
-          </Box>
-        </Toolbar>
-      </AppBar>
-    );
-  };
 
   return (
     <Box
@@ -135,8 +25,7 @@ const LandingPage: React.FC<LandingPageProps> = ({}) => {
         backgroundColor: theme.palette.surface.main,
       }}
     >
-      {/* Use the Topbar component here */}
-      <Topbar />
+      <TopBar />
 
       {/* Content */}
       <Box display="flex" flexGrow={1}>
@@ -208,6 +97,7 @@ const LandingPage: React.FC<LandingPageProps> = ({}) => {
             >
               picture here
             </Typography>
+            <img src=“/images/pageimage.png"
           </Box>
         </Box>
       </Box>
