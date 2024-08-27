@@ -9,6 +9,7 @@ import {
   IconButton,
   useTheme,
   Typography,
+  Link,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
@@ -103,13 +104,9 @@ const TopBar: React.FC<TopBarProps> = ({}) => {
             open={Boolean(anchorEl)}
             onClose={handleMenuClose}
           >
-            <MenuItem
-              LinkComponent={NextLink}
-              href="/submit-url"
-              onClick={handleMenuClose}
-            >
-              Submit Url
-            </MenuItem>
+            <Link href="/submit-url" component={NextLink} passHref>
+              <MenuItem>Submit Url</MenuItem>
+            </Link>
           </Menu>
         </Box>
       </Toolbar>
