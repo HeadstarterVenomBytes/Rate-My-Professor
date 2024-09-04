@@ -12,6 +12,7 @@ import {
   Rating,
   Card,
   CardContent,
+  LinearProgress,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { AdvancedSearchForm } from "./AdvancedSearchForm";
@@ -112,85 +113,111 @@ const ProfessorSearch: React.FC<ProfessorSearchProps> = ({}) => {
       </Box>
 
       {/* Display Professor Recommendations */}
-      <Grid container spacing={3}>
-        {recommendations && recommendations.length > 0 ? (
-          recommendations.map((prof, index) => (
-            <Grid item xs={12} sm={6} md={4} key={index}>
-              <Card
-                elevation={1}
-                sx={{
-                  bgcolor: theme.palette.surfaceContainer.main,
-                  borderRadius: 4,
-                  transition: "box-shadow 0.3s",
-                  "&:hover": {
-                    boxShadow: 6,
-                  },
-                }}
-              >
-                <CardContent>
-                  <Typography variant="h6" gutterBottom>
-                    {prof.name}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    gutterBottom
-                  >
-                    {prof.department} | {prof.university}
-                  </Typography>
-                  <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                    <Rating value={prof.averageRating} readOnly size="small" />
-                    <Typography variant="body2" sx={{ ml: 1 }}>
-                      ({prof.averageRating.toFixed(2)})
-                    </Typography>
-                  </Box>
-                  <Typography variant="body2" color="text.secondary">
-                    Top Reviews Avg: {prof.topReviewsAvgRating.toFixed(2)}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {prof.numRatings} ratings
-                  </Typography>
-                  <Box sx={{ mt: 2, mb: 2 }}>
-                    {prof.tags.split(", ").map((tag, i) => (
-                      <Chip
-                        key={i}
-                        label={tag}
-                        size="small"
-                        sx={{
-                          mr: 0.5,
-                          mb: 0.5,
-                          bgColor: theme.palette.secondaryContainer.main,
-                        }}
-                      ></Chip>
-                    ))}
-                  </Box>
-                  <Typography variant="body2" sx={{ mb: 1 }}>
-                    {prof.reviews_summary}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      fontStyle: "italic",
-                      color: theme.palette.secondary.main,
-                    }}
-                  >
-                    {prof.explanation}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))
-        ) : (
-          <Typography
-            variant="body1"
-            sx={{ mt: 2, textAlign: "center", width: "100%" }}
-          >
-            {isLoading
-              ? "Loading recommendations..."
-              : "No recommendations found."}
+      {isLoading ? (
+        <Box
+          sx={{
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            mt: 2,
+            p: 4
+
+          }}
+        >
+          <Typography variant="h6" gutterBottom textAlign="center">
+            Loading Recommendations
           </Typography>
-        )}
-      </Grid>
+          <LinearProgress
+            color="primary"
+            sx={{
+              width: "80%",
+              maxWidth: "600px",
+            }}
+          />
+        </Box>
+      ) : (
+        <Grid container spacing={3}>
+
+          {recommendations && recommendations.length > 0 ? (
+
+            recommendations.map((prof, index) => (
+
+              <Grid item xs={12} sm={6} md={4} key={index}>
+                <Card
+                  elevation={1}
+                  sx={{
+                    bgcolor: theme.palette.surfaceContainer.main,
+                    borderRadius: 4,
+                    transition: "box-shadow 0.3s",
+                    "&:hover": {
+                      boxShadow: 6,
+                    },
+                  }}
+                >
+                  <CardContent>
+                    <Typography variant="h6" gutterBottom>
+                      {prof.name}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      gutterBottom
+                    >
+                      {prof.department} | {prof.university}
+                    </Typography>
+                    <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                      <Rating value={prof.averageRating} readOnly size="small" />
+                      <Typography variant="body2" sx={{ ml: 1 }}>
+                        ({prof.averageRating.toFixed(2)})
+                      </Typography>
+                    </Box>
+                    <Typography variant="body2" color="text.secondary">
+                      Top Reviews Avg: {prof.topReviewsAvgRating.toFixed(2)}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {prof.numRatings} ratings
+                    </Typography>
+                    <Box sx={{ mt: 2, mb: 2 }}>
+                      {prof.tags.split(", ").map((tag, i) => (
+                        <Chip
+                          key={i}
+                          label={tag}
+                          size="small"
+                          sx={{
+                            mr: 0.5,
+                            mb: 0.5,
+                            bgColor: theme.palette.secondaryContainer.main,
+                          }}
+                        ></Chip>
+                      ))}
+                    </Box>
+                    <Typography variant="body2" sx={{ mb: 1 }}>
+                      {prof.reviews_summary}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontStyle: "italic",
+                        color: theme.palette.secondary.main,
+                      }}
+                    >
+                      {prof.explanation}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))
+          ) : (
+            <Typography
+              variant="body1"
+              sx={{ mt: 2, textAlign: "center", width: "100%" }}
+            >
+              No recommendations found.
+            </Typography>
+          )}
+        </Grid>
+      )}
     </Box>
   );
 };
